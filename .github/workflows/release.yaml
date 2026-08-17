@@ -1,0 +1,33 @@
+name: Release (fork)
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    # Fork-only release; upstream has its own release job in ci.yaml
+    if: ${{ github.repository != 'golang-migrate/migrate' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean --config .goreleaser.fork.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Private deploy key (with write access) of <owner>/homebrew-tap, used to push the updated formula
+          TAP_DEPLOY_KEY: ${{ secrets.TAP_DEPLOY_KEY }}
