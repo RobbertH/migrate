@@ -9,6 +9,25 @@
 
 # migrate
 
+> [!NOTE]
+> **This is a fork of [golang-migrate/migrate](https://github.com/golang-migrate/migrate)** that adds Microsoft Entra ID (Azure AD) authentication support to the [SQL Server driver](database/sqlserver) (`fedauth=` connection parameter, e.g. `ActiveDirectoryDefault` for CI/CD). Everything else is identical to upstream.
+>
+> **Install via Homebrew:**
+>
+> ```bash
+> brew install robberth/tap/migrate
+> ```
+>
+> If you already have upstream's `golang-migrate` installed, run `brew uninstall golang-migrate` first — the two provide the same `migrate` binary and cannot be installed side by side. The binary includes **all** database and source drivers (Postgres, MySQL, SQL Server, MongoDB, etc.), same as the official release, so it's a drop-in replacement.
+>
+> Example connection string using Entra ID auth:
+>
+> ```bash
+> migrate -database 'sqlserver://myserver.database.windows.net:1433?database=mydb&fedauth=ActiveDirectoryDefault' -path ./migrations up
+> ```
+>
+> See the [SQL Server driver README](database/sqlserver) for all supported `fedauth` modes.
+
 __Database migrations written in Go. Use as [CLI](#cli-usage) or import as [library](#use-in-your-go-project).__
 
 * Migrate reads migrations from [sources](#migration-sources)
